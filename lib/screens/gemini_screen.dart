@@ -19,6 +19,10 @@ class _GeminiScreenState extends State<GeminiScreen> {
   void initState() {
     _controller = GeminiController(
       GenerativeModel(model: 'gemini-pro', apiKey: AppConfig.geminiApiKey),
+      GenerativeModel(
+        model: 'gemini-pro-vision',
+        apiKey: AppConfig.geminiApiKey,
+      ),
     )..startChat();
     super.initState();
   }
@@ -26,7 +30,14 @@ class _GeminiScreenState extends State<GeminiScreen> {
   void _onSendMessage() {
     if (textTEC.text.isNotEmpty) {
       _controller.onSendMessage(textTEC.text);
-      textTEC.text = '';
+      textTEC.clear();
+    }
+  }
+
+  void _onSendImageMessage() {
+    if (textTEC.text.isNotEmpty) {
+      _controller.onSendImageMessage(textTEC.text);
+      textTEC.clear();
     }
   }
 
@@ -38,6 +49,10 @@ class _GeminiScreenState extends State<GeminiScreen> {
           builder: (_, bool isLoading, __) {
             return Column(
               children: [
+                Image.asset(
+                  '../../assets/images/fdb.png',
+                  width: 200,
+                ),
                 Expanded(
                   child: ListView.builder(
                     itemCount: _controller.messages.length,
@@ -100,10 +115,19 @@ class _GeminiScreenState extends State<GeminiScreen> {
                             ),
                             controller: textTEC),
                       ),
+                      const SizedBox(width: 8),
                       IconButton(
                         onPressed: _onSendMessage,
                         icon: const Icon(
                           Icons.send,
+                          color: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      IconButton(
+                        onPressed: _onSendImageMessage,
+                        icon: const Icon(
+                          Icons.image,
                           color: Colors.white,
                         ),
                       ),
